@@ -94,13 +94,13 @@ export default {
     loadDetails() {
       if(this.isTeacher) {
         api.get("/teacher/detail").then( data => {
-          console.log(data)
+          // console.log(data)
           this.teacher.orgs = data.orgs;
           this.teacher.assignments = data.assignments;
         })
       }else{
         api.get("/student/detail").then(data => {
-          console.log(data)
+          // console.log(data)
           // 登录成功后请求用户的详细信息
           // 赋值操作
           this.student.orgs = data.orgs;

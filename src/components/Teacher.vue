@@ -216,13 +216,14 @@ export default {
                 start_time : this.newWorkForm.start_time,
                 end_time : this.newWorkForm.end_time
             }
-            console.log(form1.org_id);
+            // console.log(form1.org_id);
             // api.defaults.headers.common['Token'] = 
-            api.post("/teacher/createAssignment", form1, "{Token:info.token, Content-Type:application/x-www-form-urlencoded}").then( data => {
-                console.log(data)
-            }, err => {
-                console.log(err)
-            })
+            api.post("/teacher/createAssignment", form1, "{Token:info.token, Content-Type:application/x-www-form-urlencoded}")
+            // .then( data => {
+            //     // console.log(data)
+            // }, err => {
+            //     // console.log(err)
+            // })
         },
         // 日期选择
         onChange(date, dateString) {
