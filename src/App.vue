@@ -3,11 +3,14 @@
       <a-layout-header class="header flexrow">
         <!-- flexrow以行作为布局 -->
         <h2>作业管理系统</h2>
+        <!-- 登录后的头部 -->
         <div class="right flexrow" v-if="loggedIn">
+          <!-- 老师的头部 -->
           <div v-if="isTeacher" class="flexrow">
             <h4>{{ info.name }}</h4>
-            <a-button icon="file-add" class="vcenter" type="primary">新建作业</a-button>
+            <a-button icon="file-add" class="vcenter" type="primary" @click="newWorkOn">新建作业</a-button>
           </div>
+          <!-- 学生的头部 -->
           <div v-else class="flexrow">
             <h4 class="flexcol">
               <span>{{ info.full_name }}</span>
@@ -24,6 +27,7 @@
             </div>
             
           </div>
+          <!-- 公共头部 -->
           <a href="http://vipgit.chanke.xyz" target="_blank" class="vcenter">
             <a-button icon="home">代码仓库</a-button>
           </a>
@@ -43,7 +47,7 @@
 </template>
 
 <script>
-import {mapState} from "vuex"
+import {mapState, mapMutations} from "vuex"
 import {api} from "./utils/api"
 import Authorization from "./components/Authorization"
 import Teacher from "./components/Teacher"
@@ -67,12 +71,6 @@ export default {
     }
   },
   computed: {
-    // loggedIn() {
-    //   return this.$store.state.user.loggedIn
-    // },
-    // info() {
-    //   return this.$store.state.user.info
-    // },
     ...mapState("user", ["info", "loggedIn"]),
     isTeacher() {
       return this.info.is_admin > 0;
@@ -92,6 +90,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["newWorkOn"]),
     loadDetails() {
       if(this.isTeacher) {
         api.get("/teacher/detail").then( data => {

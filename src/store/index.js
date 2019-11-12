@@ -7,11 +7,18 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    newWork: false,
   },
   getters: {
 
   },
   mutations: {
+    newWorkOn(state) {
+      state.newWork = true;
+    },
+    newWorkOff(state) {
+      state.newWork = false;
+    }
   },
   actions: {
   },

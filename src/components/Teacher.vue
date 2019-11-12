@@ -31,6 +31,7 @@
                 <a-button icon="form" type="primary" @click="revisingWork = record;revisingForm.review=record.teacher_review" >批改</a-button>
             </template>
         </a-table>
+        <!-- 批改作业的模态框 -->
         <a-modal :visible="Boolean(revisingWork)" :footer="null" @cancel="revisingWork = false">
             <form action="">
                 <a-form-item label="状态">
@@ -53,11 +54,29 @@
                 </a-form-item>
             </form>
         </a-modal>
+        <!-- 新增作业的模态框 -->
+        <a-modal :visible="newWork" @cancel="newWorkOff" :footer="null">
+            <form action="">
+                <a-form-item label="课程">
+                    <a-input v-model="newWorkForm.org_id"></a-input>
+                </a-form-item>
+                <a-form-item label="作业名称">
+                    <a-input v-model="newWorkForm.name"></a-input>
+                </a-form-item>
+                <a-form-item label="开始/结束时间">
+                    <a-range-picker @change="onChange">
+                    </a-range-picker>
+                </a-form-item>
+                <a-button type="primary" @click="save1();newWorkOff()">保存</a-button>
+            </form>
+        </a-modal>
     </div>
 </template>
 <script>
 import {api} from "../utils/api"
-import {mapState} from "vuex"
+import {mapState, mapMutations} from "vuex"
+// import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants'
+
 const work_status = {
     "0": "待批改",
     "1": "需完善",
@@ -68,6 +87,12 @@ export default {
     props: ["teacher"],
     data() {
         return {
+            newWorkForm: {
+                org_id: "",
+                name: "",
+                start_time:"",
+                end_time:"",
+            },
             work_status,
             revisingWork: false,
             revisingAssignment: false,
@@ -126,6 +151,9 @@ export default {
         }
     },
     computed: {
+        newWork() {
+            return this.$store.state.newWork
+        },
         ...mapState("user", ["info"]),
         columns() {
             return [{
@@ -159,6 +187,7 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(["newWorkOff"]),
         removeAssignment(id) {
             // console.log(this.teacher.assignments.findIndex(assignment =>  assignment.assignment_id === id))
             api.post("/teacher/deleteAssignment", {id}).then( () => {
@@ -178,7 +207,28 @@ export default {
             }).finnally( () => {
                 this.revisingWork = false;
             })
-        }
+        },
+        // 新建作业
+        save1() {
+            const form1 = {
+                org_id : this.newWorkForm.org_id,
+                name : this.newWorkForm.name,
+                start_time : this.newWorkForm.start_time,
+                end_time : this.newWorkForm.end_time
+            }
+            console.log(form1.org_id);
+            // api.defaults.headers.common['Token'] = 
+            api.post("/teacher/createAssignment", form1, "{Token:info.token, Content-Type:application/x-www-form-urlencoded}").then( data => {
+                console.log(data)
+            }, err => {
+                console.log(err)
+            })
+        },
+        // 日期选择
+        onChange(date, dateString) {
+            this.newWorkForm.start_time = dateString[0]
+            this.newWorkForm.end_time = dateString[1]
+        },
     }
 }
 </script>
